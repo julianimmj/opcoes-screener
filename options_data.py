@@ -11,6 +11,14 @@ import time
 import streamlit as st
 import re
 
+# Dependências do Selenium
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -142,43 +150,95 @@ def buscar_opcoes_opcoes_net(ticker: str) -> pd.DataFrame:
 def buscar_opcoes_completas(ticker: str, dias_min: int = 45,
                              dias_max: int = 70) -> pd.DataFrame:
     """
-    Busca opções e filtra por vencimento, retornando dados completos.
-    Utiliza parsing direto do HTML da página de opções.
-
-    Args:
-        ticker: Ticker do ativo
-        dias_min: Mínimo de dias até o vencimento
-        dias_max: Máximo de dias até o vencimento
-
-    Returns:
-        DataFrame com opções filtradas
+    Busca opções verificando múltiplos vencimentos usando Selenium Headless.
+    Contorna o anti-bot e o carregamento dinâmico via KnockoutJS.
     """
     url = f"https://opcoes.net.br/opcoes/bovespa/{ticker.upper()}"
+    dados_completos = []
 
     try:
-        session = requests.Session()
-        session.headers.update(HEADERS)
+        options = Options()
+        options.add_argument("--headless")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--window-size=1920,1080")
+        options.add_argument(f"user-agent={HEADERS['User-Agent']}")
 
-        response = session.get(url, timeout=20)
-        response.raise_for_status()
+        try:
+            service = Service(ChromeDriverManager().install())
+            driver = webdriver.Chrome(service=service, options=options)
+        except Exception:
+            driver = webdriver.Chrome(options=options)
 
-        html = response.text
+        driver.get(url)
 
-        # O site carrega dados via JavaScript (KnockoutJS), então o HTML
-        # estático pode não conter os dados da tabela. Nesse caso, usamos
-        # uma abordagem alternativa baseada nos dados do yfinance + B-S.
-        soup = BeautifulSoup(html, "html.parser")
+        # Aguarda a dropdown de vencimentos carregar
+        WebDriverWait(driver, 15).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "#vencimentos option"))
+        )
 
-        # Tenta encontrar dados inline no JavaScript
-        options_data = _extrair_dados_javascript(html, ticker)
+        vencimentos_select = driver.find_element(By.ID, "vencimentos")
+        options_elements = vencimentos_select.find_elements(By.TAG_NAME, "option")
+        
+        hoje = datetime.now()
+        vencimentos_para_buscar = []
 
-        if options_data is not None and not options_data.empty:
-            return options_data
+        # Encontra expirations que cabem no nosso range
+        for opt in options_elements:
+            venc_str = opt.get_attribute("value")
+            if not venc_str: continue
+            try:
+                venc_date = datetime.strptime(venc_str, "%Y-%m-%d")
+                dias_ate_venc = (venc_date - hoje).days
+                if dias_min <= dias_ate_venc <= dias_max:
+                    vencimentos_para_buscar.append((venc_str, dias_ate_venc, opt))
+            except ValueError:
+                pass
 
-        # Fallback: retorna DataFrame vazio (o app usará simulação)
-        return pd.DataFrame()
+        # Itera sobre as abas maduras e clica
+        for venc_str, dias_ate_venc, opt_element in vencimentos_para_buscar:
+            opt_element.click()
+            time.sleep(2.5) # Aguarda KnockoutJS injetar a tabela
 
-    except requests.RequestException:
+            html = driver.page_source
+            soup = BeautifulSoup(html, "html.parser")
+            table = soup.find("table", {"id": "tblListaOpc"})
+            
+            if table:
+                tbody = table.find("tbody")
+                if tbody:
+                    rows = tbody.find_all("tr")
+                    for row in rows:
+                        cells = row.find_all("td")
+                        if len(cells) >= 12:
+                            try:
+                                ticker_opcao = cells[0].get_text(strip=True)
+                                tipo = cells[1].get_text(strip=True)
+                                strike = _parse_number(cells[3].get_text(strip=True))
+                                ultimo = _parse_number(cells[6].get_text(strip=True))
+                                vol_impl = _parse_number(cells[11].get_text(strip=True))
+
+                                if strike and strike > 0 and ultimo and ultimo > 0:
+                                    dados_completos.append({
+                                        "ticker_opcao": ticker_opcao,
+                                        "ticker_base": ticker.upper(),
+                                        "tipo": tipo.upper() if tipo else "",
+                                        "strike": strike,
+                                        "vencimento": venc_str,
+                                        "dias_ate_venc": dias_ate_venc,
+                                        "ultimo": ultimo,
+                                        "vol_implicita": vol_impl if vol_impl else 0.0,
+                                    })
+                            except (ValueError, IndexError):
+                                continue
+
+        driver.quit()
+
+        return pd.DataFrame(dados_completos) if dados_completos else pd.DataFrame()
+
+    except Exception as e:
+        print(f"Alerta: Falha no injetor Selenium ({str(e)}). Acionando simulação fallback.")
         return pd.DataFrame()
 
 
