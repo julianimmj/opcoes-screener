@@ -633,7 +633,7 @@ def main():
 
                 df_display.columns = [
                     "Opção", "Ativo", "Vencimento", "Strike", "Preço Ativo",
-                    "Tipo", "Preço Mercado", "Preço Justo (B-S)",
+                    "Tipo", "Preço Mercado", "Preço Justo (Black-Scholes)",
                     "Vol. Impl. (%)", "Vol. Hist. 60d (%)",
                     "Diff Vol (pp)", "Desconto (%)"
                 ]
@@ -644,7 +644,7 @@ def main():
                         "Strike": "R$ {:.2f}",
                         "Preço Ativo": "R$ {:.2f}",
                         "Preço Mercado": "R$ {:.2f}",
-                        "Preço Justo (B-S)": "R$ {:.2f}",
+                        "Preço Justo (Black-Scholes)": "R$ {:.2f}",
                         "Vol. Impl. (%)": "{:.1f}%",
                         "Vol. Hist. 60d (%)": "{:.1f}%",
                         "Diff Vol (pp)": "{:+.1f}",
