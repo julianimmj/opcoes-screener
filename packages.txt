@@ -1,5 +1,5 @@
 chromium
-chromium-chromedriver
+chromium-driver
 libnss3
 libxss1
 libasound2
