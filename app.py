@@ -17,9 +17,7 @@ from black_scholes import (
     calcular_vol_historica, obter_preco_atual, black_scholes_price,
     calcular_vol_implicita, SELIC_RATE, tempo_em_anos
 )
-from options_data import (
-    buscar_opcoes_completas, gerar_opcoes_simuladas
-)
+from options_data import buscar_opcoes_completas
 
 # ─── Page Config ───────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -357,13 +355,9 @@ def processar_ticker(ticker: str, dias_min: int, dias_max: int,
     # 3. Busca opções do opcoes.net.br
     opcoes_df = buscar_opcoes_completas(ticker, dias_min, dias_max)
 
-    # 4. Se scraping falhou, usa simulação com dados realistas
+    # 4. Verifica se a raspagem retornou dados
     if opcoes_df.empty:
-        opcoes_df = gerar_opcoes_simuladas(
-            ticker, preco_atual, vol_hist, dias_min, dias_max
-        )
-
-    if opcoes_df.empty:
+        st.toast(f"⚠️ Não foi possível extrair dados da B3 para {ticker}.")
         return pd.DataFrame()
 
     # 5. Se os dados vieram do scraping, precisamos calcular B-S
