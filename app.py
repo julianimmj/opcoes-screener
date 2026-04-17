@@ -403,6 +403,7 @@ def processar_ticker(ticker: str, dias_min: int, dias_max: int,
                 "ticker_base": ticker,
                 "tipo": row.get("tipo", "").upper(),
                 "strike": K,
+                "preco_atual_base": round(preco_atual, 2),
                 "vencimento": row.get("vencimento", ""),
                 "dias_ate_venc": row.get("dias_ate_venc", 0),
                 "preco_mercado": round(preco_mkt, 2),
@@ -549,15 +550,13 @@ def main():
                 # Limita a 20 opções para visualização
                 df_chart = df_final.head(20)
 
-                col_g1, col_g2 = st.columns(2)
+                fig_vol = create_vol_comparison_chart(df_chart)
+                st.plotly_chart(fig_vol, use_container_width=True)
 
-                with col_g1:
-                    fig_vol = create_vol_comparison_chart(df_chart)
-                    st.plotly_chart(fig_vol, use_container_width=True)
+                st.markdown("<br>", unsafe_allow_html=True)
 
-                with col_g2:
-                    fig_disc = create_discount_chart(df_chart)
-                    st.plotly_chart(fig_disc, use_container_width=True)
+                fig_disc = create_discount_chart(df_chart)
+                st.plotly_chart(fig_disc, use_container_width=True)
 
                 # Scatter plot: IV vs HV
                 fig_scatter = go.Figure()
@@ -627,13 +626,13 @@ def main():
                 )
 
                 df_display = df_final[[
-                    "ticker_opcao", "ticker_base", "vencimento", "strike",
+                    "ticker_opcao", "ticker_base", "vencimento", "strike", "preco_atual_base",
                     "tipo", "preco_mercado", "preco_justo_bs", "vol_implicita",
                     "vol_historica_60d", "diff_vol", "desconto_pct"
                 ]].copy()
 
                 df_display.columns = [
-                    "Opção", "Ativo", "Vencimento", "Strike",
+                    "Opção", "Ativo", "Vencimento", "Strike", "Preço Ativo",
                     "Tipo", "Preço Mercado", "Preço Justo (B-S)",
                     "Vol. Impl. (%)", "Vol. Hist. 60d (%)",
                     "Diff Vol (pp)", "Desconto (%)"
@@ -643,6 +642,7 @@ def main():
                     df_display.style
                     .format({
                         "Strike": "R$ {:.2f}",
+                        "Preço Ativo": "R$ {:.2f}",
                         "Preço Mercado": "R$ {:.2f}",
                         "Preço Justo (B-S)": "R$ {:.2f}",
                         "Vol. Impl. (%)": "{:.1f}%",
