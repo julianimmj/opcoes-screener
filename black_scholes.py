@@ -7,11 +7,21 @@ from scipy.stats import norm
 from scipy.optimize import brentq
 import yfinance as yf
 import streamlit as st
+import requests
 from datetime import datetime, timedelta
 
 
-# Taxa SELIC aproximada (anualizada) base Brasil atual
-SELIC_RATE = 0.105
+def obter_taxa_selic_atual() -> float:
+    """Busca a meta da taxa Selic atualizada via API do Banco Central do Brasil."""
+    try:
+        r = requests.get('https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json', timeout=5)
+        return float(r.json()[0]['valor']) / 100.0
+    except Exception:
+        # Fallback razoável
+        return 0.105
+
+# Taxa SELIC dinâmica vinculada à economia atualizada
+SELIC_RATE = obter_taxa_selic_atual()
 
 
 def calcular_vol_historica(ticker: str, dias: int = 60) -> float | None:
