@@ -10,8 +10,8 @@ import streamlit as st
 from datetime import datetime, timedelta
 
 
-# Taxa SELIC aproximada (anualizada)
-SELIC_RATE = 0.1425
+# Taxa SELIC aproximada (anualizada) base Brasil atual
+SELIC_RATE = 0.105
 
 
 def calcular_vol_historica(ticker: str, dias: int = 60) -> float | None:
