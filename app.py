@@ -648,7 +648,12 @@ def main():
                         subset=["Desconto (%)"],
                         cmap="RdYlGn",
                         vmin=-50, vmax=100,
-                    ),
+                    )
+                    .set_properties(**{'text-align': 'center'})
+                    .set_table_styles([{
+                        'selector': 'th',
+                        'props': [('text-align', 'center')]
+                    }]),
                     use_container_width=True,
                     height=500,
                 )
