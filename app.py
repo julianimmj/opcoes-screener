@@ -27,45 +27,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# HIDE STREAMLIT CLOUD UI
-hide_streamlit_style = """
-<style>
-    /* ══ Esconder o header inteiro visualmente, mas preservar sidebar toggle ══ */
-    [data-testid="stHeader"] {
-        background: transparent !important;
-        visibility: hidden !important;
-        height: 0 !important;
-        min-height: 0 !important;
-        padding: 0 !important;
-        overflow: visible !important;
-    }
-
-    /* ══ Forçar o botão de abrir/fechar sidebar a permanecer visível ══ */
-    [data-testid="collapsedControl"] {
-        visibility: visible !important;
-        display: flex !important;
-        z-index: 999999 !important;
-        position: fixed !important;
-        top: 0.5rem !important;
-        left: 0.5rem !important;
-    }
-
-    /* ══ Esconder elementos Cloud individualmente ══ */
-    #MainMenu {display: none !important;}
-    footer {display: none !important;}
-    .stDeployButton {display: none !important;}
-    [data-testid="stToolbar"] {display: none !important;}
-    [data-testid="manage-app-button"] {display: none !important;}
-    [data-testid="stDecoration"] {display: none !important;}
-    [data-testid="stStatusWidget"] {display: none !important;}
-    #GithubIcon {display: none !important;}
-    .viewerBadge_container__1QSob {display: none !important;}
-    .viewerBadge_link__qRIco {display: none !important;}
-</style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
-
 # ─── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
