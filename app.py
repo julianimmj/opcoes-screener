@@ -25,7 +25,7 @@ st.set_page_config(
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded",
-)\n
+)
 
 # HIDE STREAMLIT CLOUD UI
 hide_streamlit_style = """
