@@ -30,12 +30,12 @@ st.set_page_config(
 # HIDE STREAMLIT CLOUD UI
 hide_streamlit_style = """
 <style>
-    /* Esconder apenas os elementos indesejados da Cloud, sem tocar no header principal */
+    /* Esconder apenas os elementos indesejados da Cloud, sem tocar na barra superior */
     #MainMenu {visibility: hidden !important; display: none !important;}
     footer {visibility: hidden !important; display: none !important;}
     
-    /* Ocultar toolbar e botões de deploy */
-    [data-testid="stToolbar"] {display: none !important; visibility: hidden !important;}
+    /* Ocultar apenas botões de deploy e logo do Github */
+    .stDeployButton {display: none !important; visibility: hidden !important;}
     [data-testid="manage-app-button"] {display: none !important; visibility: hidden !important;}
     #GithubIcon {display: none !important; visibility: hidden !important;}
     .viewerBadge_container__1QSob {display: none !important; visibility: hidden !important;}
