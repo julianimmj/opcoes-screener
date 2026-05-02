@@ -189,10 +189,7 @@ st.markdown("""
         background: linear-gradient(90deg, #7b2ff7, #00d2ff);
     }
 
-    /* Hide Streamlit branding */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {background-color: transparent;}
+    /* Streamlit branding — gerenciado pelo bloco hide_streamlit_style */
 
     /* Disclaimer */
     .disclaimer {
