@@ -25,7 +25,29 @@ st.set_page_config(
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded",
-)
+)\n
+
+# HIDE STREAMLIT CLOUD UI
+hide_streamlit_style = """
+<style>
+    /* Esconder o menu do Streamlit e o header inteiro */
+    #MainMenu {visibility: hidden !important;}
+    header {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
+    
+    /* Seletores atualizados (2024/2025) */
+    .stApp > header {display: none !important;}
+    [data-testid="stHeader"] {display: none !important;}
+    [data-testid="stToolbar"] {display: none !important;}
+    [data-testid="stDecoration"] {display: none !important;}
+    [data-testid="stStatusWidget"] {display: none !important;}
+    [data-testid="manage-app-button"] {display: none !important;}
+    #GithubIcon {display: none !important; visibility: hidden !important;}
+    .viewerBadge_container__1QSob {display: none !important;}
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 
 # ─── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
