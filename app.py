@@ -30,19 +30,15 @@ st.set_page_config(
 # HIDE STREAMLIT CLOUD UI
 hide_streamlit_style = """
 <style>
-    /* Esconder o menu do Streamlit, mas manter o botão de abrir sidebar */
-    #MainMenu {visibility: hidden !important;}
+    /* Esconder apenas os elementos indesejados da Cloud, sem tocar no header principal */
+    #MainMenu {visibility: hidden !important; display: none !important;}
     footer {visibility: hidden !important; display: none !important;}
     
-    /* Seletores atualizados (2024/2025) */
-    [data-testid="stHeader"] {background-color: transparent !important; z-index: 99999 !important; pointer-events: none !important;}
-    [data-testid="collapsedControl"] {pointer-events: auto !important; z-index: 999999 !important; display: flex !important; visibility: visible !important;}
-    [data-testid="stToolbar"] {display: none !important;}
-    [data-testid="stDecoration"] {display: none !important;}
-    [data-testid="stStatusWidget"] {display: none !important;}
-    [data-testid="manage-app-button"] {display: none !important;}
+    /* Ocultar toolbar e botões de deploy */
+    [data-testid="stToolbar"] {display: none !important; visibility: hidden !important;}
+    [data-testid="manage-app-button"] {display: none !important; visibility: hidden !important;}
     #GithubIcon {display: none !important; visibility: hidden !important;}
-    .viewerBadge_container__1QSob {display: none !important;}
+    .viewerBadge_container__1QSob {display: none !important; visibility: hidden !important;}
 </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
