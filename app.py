@@ -35,7 +35,8 @@ hide_streamlit_style = """
     footer {visibility: hidden !important; display: none !important;}
     
     /* Seletores atualizados (2024/2025) */
-    [data-testid="stHeader"] {background-color: transparent !important;}
+    [data-testid="stHeader"] {background-color: transparent !important; z-index: 99999 !important; pointer-events: none !important;}
+    [data-testid="collapsedControl"] {pointer-events: auto !important; z-index: 999999 !important; display: flex !important; visibility: visible !important;}
     [data-testid="stToolbar"] {display: none !important;}
     [data-testid="stDecoration"] {display: none !important;}
     [data-testid="stStatusWidget"] {display: none !important;}
