@@ -39,8 +39,8 @@ TICKERS_COM_OPCOES = [
     "KLBN11",  # Klabin UNT
     "ENEV3",   # Eneva ON
     "RDOR3",   # Rede D'Or ON
-    "EMBR3",   # Embraer ON
-    "JBSS3",   # JBS ON
+    "EMBJ3",   # Embraer ON
+    "JBSS32",  # JBS BDR
     "MRVE3",   # MRV ON
     "CVCB3",   # CVC ON
     "BRAP4",   # Bradespar PN
@@ -83,8 +83,8 @@ NOMES_ATIVOS = {
     "KLBN11": "Klabin UNT",
     "ENEV3": "Eneva ON",
     "RDOR3": "Rede D'Or ON",
-    "EMBR3": "Embraer ON",
-    "JBSS3": "JBS ON",
+    "EMBJ3": "Embraer ON",
+    "JBSS32": "JBS BDR",
     "MRVE3": "MRV ON",
     "CVCB3": "CVC ON",
     "BRAP4": "Bradespar PN",
