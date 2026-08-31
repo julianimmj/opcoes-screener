@@ -1,4 +1,4 @@
-﻿name: Manter Streamlit Ativo
+name: Manter Streamlit Ativo
 
 on:
   schedule:
